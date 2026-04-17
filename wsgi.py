@@ -3,10 +3,14 @@ WSGI entry point for LearnNova application
 """
 
 import os
-from app import create_app # type: ignore[import]
-from config import Config
+from app import create_app  # type: ignore[import]
+from config import ProductionConfig
 
-app = create_app(Config)
+env = os.environ.get("FLASK_ENV", "production")
 
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=int(os.getenv('PORT', 5000)))
+if env == "development":
+    from config import DevelopmentConfig
+
+    app = create_app(DevelopmentConfig)
+else:
+    app = create_app(ProductionConfig)
