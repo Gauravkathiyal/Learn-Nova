@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-1K34ZCR5M7"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-1K34ZCR5M7');
+    </script>
+    <meta charset="utf-8">
+    <title>{{ test.title }} - Test Details - LearnNova</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="" name="keywords">
+    <meta content="" name="description">
+
+    <!-- Favicon -->
+    <link href="img/favicon.ico" rel="icon">
+
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600&family=Nunito:wght@600;700;800&display=swap"
+        rel="stylesheet">
+
+    <!-- Icon Font Stylesheet -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- Libraries Stylesheet -->
+    <link href="lib/animate/animate.min.css" rel="stylesheet">
+    <link href="lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
+
+    <!-- Customized Bootstrap Stylesheet -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Template Stylesheet -->
+    <link href="css/style.css" rel="stylesheet">
+    <link href="css/dark-mode.css" rel="stylesheet">
+</head>
+
+<body>
+    <!-- Spinner Start -->
+    <div id="spinner"
+        class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+        <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
+    <!-- Spinner End -->
+
+
+    <!-- Navbar Start -->
+    <nav class="navbar navbar-expand-lg bg-white navbar-light shadow sticky-top p-0">
+        <a href="/" class="navbar-brand d-flex align-items-center px-4 px-lg-5">
+            <h2 class="m-0 text-primary"><i class="fa fa-book me-3"></i>Learn Nova</h2>
+        </a>
+        <button type="button" class="navbar-toggler me-4" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarCollapse">
+            <div class="navbar-nav ms-auto p-4 p-lg-0">
+                <a href="/" class="nav-item nav-link">Home</a>
+                <a href="/courses" class="nav-item nav-link">Courses</a>
+                <a href="/tests" class="nav-item nav-link active">Mock Tests</a>
+                <a href="/dashboard" class="nav-item nav-link">Dashboard</a>
+                <a href="/about" class="nav-item nav-link">About</a>
+                <a href="/contact" class="nav-item nav-link">Contact</a>
+                <button type="button" id="darkModeToggle" class="nav-item nav-link dark-mode-toggle bg-transparent border-0"><i class="fas fa-moon"></i></button>
+            </div>
+            {% if current_user.is_authenticated %}
+            <a href="/dashboard" class="btn btn-primary py-4 px-lg-5 d-none d-lg-block">My Dashboard<i class="fa fa-arrow-right ms-3"></i></a>
+            {% else %}
+            <a href="/login" class="btn btn-primary py-4 px-lg-5 d-none d-lg-block">Join Now<i class="fa fa-arrow-right ms-3"></i></a>
+            {% endif %}
+        </div>
+    </nav>
+    <!-- Navbar End -->
+
+
+    <!-- Test Detail Start -->
+    <div class="container-xxl py-5">
+        <div class="container">
+            <div class="row g-5">
+                <!-- Main Content -->
+                <div class="col-lg-8">
+                    <div class="bg-light rounded p-4 p-sm-5 shadow-sm">
+                        <!-- Test Header -->
+                        <div class="mb-4">
+                            <div class="d-flex flex-wrap gap-2 mb-3">
+                                <span class="badge bg-primary">{{ test.category|upper if test.category else 'GENERAL' }}</span>
+                                <span class="badge bg-{{ 'success' if test.difficulty == 'easy' else 'warning' if test.difficulty == 'medium' else 'danger' }}">{{ test.difficulty|upper }}</span>
+                                {% if test.is_practice %}
+                                <span class="badge bg-info">PRACTICE TEST</span>
+                                {% endif %}
+                            </div>
+                            <h1 class="mb-3">{{ test.title }}</h1>
+                            {% if test.description %}
+                            <p class="text-muted">{{ test.description }}</p>
+                            {% endif %}
+                        </div>
+
+                        <!-- Test Features -->
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-4">
+                                <div class="bg-white border rounded p-3 text-center">
+                                    <i class="fa fa-clock text-primary mb-2" style="font-size: 1.5rem;"></i>
+                                    <h5 class="mb-1">{{ test.duration_minutes }}</h5>
+                                    <small class="text-muted">Minutes</small>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="bg-white border rounded p-3 text-center">
+                                    <i class="fa fa-question-circle text-primary mb-2" style="font-size: 1.5rem;"></i>
+                                    <h5 class="mb-1">{{ question_count }}</h5>
+                                    <small class="text-muted">Questions</small>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="bg-white border rounded p-3 text-center">
+                                    <i class="fa fa-star text-primary mb-2" style="font-size: 1.5rem;"></i>
+                                    <h5 class="mb-1">{{ test.total_marks }}</h5>
+                                    <small class="text-muted">Total Marks</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Marking Scheme -->
+                        <div class="card border-0 shadow-sm mb-4">
+                            <div class="card-header bg-primary text-white">
+                                <h5 class="mb-0"><i class="fa fa-info-circle me-2"></i>Marking Scheme</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <p class="mb-2"><i class="fa fa-check-circle text-success me-2"></i><strong>Correct Answer:</strong> +{{ test.questions.first().marks if test.questions.first() else 4 }} marks</p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <p class="mb-0"><i class="fa fa-times-circle text-danger me-2"></i><strong>Wrong Answer:</strong> -{{ test.negative_marking }} marks</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Instructions -->
+                        <div class="card border-0 shadow-sm">
+                            <div class="card-header bg-white border-bottom">
+                                <h5 class="mb-0"><i class="fa fa-list-alt text-primary me-2"></i>Instructions</h5>
+                            </div>
+                            <div class="card-body">
+                                <ul class="list-unstyled">
+                                    <li class="mb-2"><i class="fa fa-check text-primary me-2"></i>This test contains {{ question_count }} multiple choice questions.</li>
+                                    <li class="mb-2"><i class="fa fa-check text-primary me-2"></i>Total duration is {{ test.duration_minutes }} minutes.</li>
+                                    <li class="mb-2"><i class="fa fa-check text-primary me-2"></i>Each question carries {{ test.questions.first().marks if test.questions.first() else 4 }} marks.</li>
+                                    <li class="mb-2"><i class="fa fa-check text-primary me-2"></i>There is negative marking of {{ test.negative_marking }} marks for each wrong answer.</li>
+                                    <li class="mb-2"><i class="fa fa-check text-primary me-2"></i>You can mark questions for review and answer them later.</li>
+                                    <li class="mb-0"><i class="fa fa-check text-primary me-2"></i>Once the time is up, the test will be auto-submitted.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sidebar -->
+                <div class="col-lg-4">
+                    <!-- Start Test Card -->
+                    <div class="bg-light rounded p-4 shadow-sm mb-4">
+                        <h4 class="mb-4">Ready to Begin?</h4>
+                        {% if current_user.is_authenticated %}
+                        <a href="{{ url_for('tests.start_test', test_id=test.id) }}" class="btn btn-primary w-100 py-3 mb-3">
+                            <i class="fa fa-play me-2"></i>Start Test Now
+                        </a>
+                        {% else %}
+                        <a href="{{ url_for('auth.login') }}?next={{ url_for('tests.start_test', test_id=test.id) }}" class="btn btn-primary w-100 py-3 mb-3">
+                            <i class="fa fa-lock me-2"></i>Login to Start Test
+                        </a>
+                        {% endif %}
+                        <a href="{{ url_for('tests.all_tests') }}" class="btn btn-outline-secondary w-100">
+                            <i class="fa fa-arrow-left me-2"></i>Back to Tests
+                        </a>
+                    </div>
+
+                    <!-- Test Info Card -->
+                    <div class="bg-light rounded p-4 shadow-sm">
+                        <h5 class="mb-3">Test Information</h5>
+                        <div class="mb-3">
+                            <small class="text-muted d-block">Category</small>
+                            <strong>{{ test.category|upper if test.category else 'General' }}</strong>
+                        </div>
+                        <div class="mb-3">
+                            <small class="text-muted d-block">Difficulty Level</small>
+                            <span class="badge bg-{{ 'success' if test.difficulty == 'easy' else 'warning' if test.difficulty == 'medium' else 'danger' }}">{{ test.difficulty|upper }}</span>
+                        </div>
+                        <div class="mb-3">
+                            <small class="text-muted d-block">Total Questions</small>
+                            <strong>{{ question_count }}</strong>
+                        </div>
+                        <div class="mb-3">
+                            <small class="text-muted d-block">Total Marks</small>
+                            <strong>{{ test.total_marks }}</strong>
+                        </div>
+                        <div class="mb-0">
+                            <small class="text-muted d-block">Negative Marking</small>
+                            <strong>-{{ test.negative_marking }} per wrong answer</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Test Detail End -->
+
+
+    <!-- Footer Start -->
+    <div class="container-fluid bg-dark text-light footer pt-5 mt-5">
+        <div class="container">
+            <div class="copyright">
+                <div class="row">
+                    <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
+                        &copy; <a class="border-bottom" href="#">LearnNova</a>, All Right Reserved.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Footer End -->
+
+
+    <!-- Back to Top -->
+    <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
+
+
+    <!-- JavaScript Libraries -->
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="lib/wow/wow.min.js"></script>
+    <script src="lib/easing/easing.min.js"></script>
+    <script src="lib/waypoints/waypoints.min.js"></script>
+    <script src="lib/owlcarousel/owl.carousel.min.js"></script>
+
+    <!-- Template Javascript -->
+    <script src="js/main.js"></script>
+    <script src="js/dark-mode.js"></script>
+</body>
+
+</html>

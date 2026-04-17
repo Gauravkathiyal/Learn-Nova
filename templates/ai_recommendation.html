@@ -1,0 +1,666 @@
+{% extends "index.html" %}
+{% block title %}AI Course Recommendation - LearnNova{% endblock %}
+{% block content %}
+<style>
+#spinner { display: none !important; }
+
+/* Custom styles for AI recommendations */
+.recommendation-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: none;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.recommendation-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15) !important;
+}
+
+.recommendation-card .card-img-top {
+    transition: transform 0.3s ease;
+}
+
+.recommendation-card:hover .card-img-top {
+    transform: scale(1.05);
+}
+
+.score-badge {
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+    color: white;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.ml-badge {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    display: inline-block;
+    margin-bottom: 1rem;
+}
+
+.question-step {
+    animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.progress-bar {
+    background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+}
+
+.form-check-input:checked {
+    background-color: #667eea;
+    border-color: #667eea;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+}
+
+.btn-primary:hover {
+    background: linear-gradient(135deg, #5a6fd6 0%, #6a4190 100%);
+}
+</style>
+
+<!-- Header Start -->
+<div class="container-fluid bg-primary py-5 mb-5" style="background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('/img/carousel-1.jpg'); background-size: cover; background-position: center; position: relative;">
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-10 text-center">
+                <a href="/dashboard" class="btn btn-outline-light btn-sm mb-3" style="position: absolute; top: 20px; left: 20px; z-index: 10;">
+                    <i class="fa fa-arrow-left me-2"></i>Back to Dashboard
+                </a>
+                <h1 class="display-3 animated slideInDown" style="color: #ffffff !important; text-shadow: 2px 2px 4px rgba(0,0,0,0.5);">📊 AI Course Recommendation</h1>
+                <p class="mb-4" style="color: #ffffff !important; text-shadow: 1px 1px 2px rgba(0,0,0,0.5);">Answer a few questions to get personalized course recommendations</p>
+                
+                <!-- Step indicators -->
+                <div class="row justify-content-center mt-4">
+                    <div class="col-md-4 mb-3">
+                        <div class="bg-white bg-opacity-10 rounded p-3">
+                            <h6 style="color: #ffffff !important; text-shadow: 1px 1px 2px rgba(0,0,0,0.5);"><strong>1.</strong> Select your goals</h6>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <div class="bg-white bg-opacity-10 rounded p-3">
+                            <h6 style="color: #ffffff !important; text-shadow: 1px 1px 2px rgba(0,0,0,0.5);"><strong>2.</strong> Tell us your interests</h6>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <div class="bg-white bg-opacity-10 rounded p-3">
+                            <h6 style="color: #ffffff !important; text-shadow: 1px 1px 2px rgba(0,0,0,0.5);"><strong>3.</strong> Get recommended courses</h6>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Header End -->
+
+<div class="container-xxl py-5">
+    <div class="container">
+        <!-- Progress Bar -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="progress" style="height: 25px;">
+                    <div class="progress-bar bg-primary progress-bar-striped progress-bar-animated" 
+                         id="progressBar" role="progressbar" style="width: 0%">0%</div>
+                </div>
+                <p class="text-center mt-2">Question <span id="currentQuestion">1</span> of <span id="totalQuestions">6</span></p>
+            </div>
+        </div>
+
+        <!-- Questionnaire Form -->
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <div class="card shadow-lg border-0">
+                    <div class="card-body p-5">
+                        <form id="questionnaireForm">
+                            <!-- Question 1: Primary Goal (Always shown) -->
+                            <div class="question-step" data-question="1" data-type="required">
+                                <h4 class="mb-4">1. What is your primary goal? (Select all that apply)</h4>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-check mb-3">
+                                            <input class="form-check-input goal-selector" type="checkbox" name="q1" id="q1a" value="tech">
+                                            <label class="form-check-label" for="q1a"><strong>Build a Tech Career</strong> - Software, IT, Programming</label>
+                                        </div>
+                                        <div class="form-check mb-3">
+                                            <input class="form-check-input goal-selector" type="checkbox" name="q1" id="q1b" value="govt">
+                                            <label class="form-check-label" for="q1b"><strong>Government Job</strong> - UPSC, SSC, Railway, Banking</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-check mb-3">
+                                            <input class="form-check-input goal-selector" type="checkbox" name="q1" id="q1c" value="business">
+                                            <label class="form-check-label" for="q1c"><strong>Start Business</strong> - Entrepreneurship, Startups</label>
+                                        </div>
+                                        <div class="form-check mb-3">
+                                            <input class="form-check-input goal-selector" type="checkbox" name="q1" id="q1d" value="engg">
+                                            <label class="form-check-label" for="q1d"><strong>Engineering Entrance</strong> - JEE, BITSAT</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Question 2: Tech Interest (Shown if tech selected) -->
+                            <div class="question-step d-none" data-question="2" data-show-if="tech">
+                                <h4 class="mb-4">2. Which tech area interests you most? (Select all that apply)</h4>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-check mb-3">
+                                            <input class="form-check-input" type="checkbox" name="q2" id="q2a" value="web_dev">
+                                            <label class="form-check-label" for="q2a">Web Development</label>
+                                        </div>
+                                        <div class="form-check mb-3">
+                                            <input class="form-check-input" type="checkbox" name="q2" id="q2b" value="data_science">
+                                            <label class="form-check-label" for="q2b">Data Science & AI</label>
+                                        </div>
+                                        <div class="form-check mb-3">
+                                            <input class="form-check-input" type="checkbox" name="q2" id="q2c" value="mobile_dev">
+                                            <label class="form-check-label" for="q2c">Mobile App Development</label>
+                                        </div>
+                                        <div class="form-check mb-3">
+                                            <input class="form-check-input" type="checkbox" name="q2" id="q2d" value="cloud_devops">
+                                            <label class="form-check-label" for="q2d">Cloud & DevOps</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-check mb-3">
+                                            <input class="form-check-input" type="checkbox" name="q2" id="q2e" value="cyber_security">
+                                            <label class="form-check-label" for="q2e">Cyber Security</label>
+                                        </div>
+                                        <div class="form-check mb-3">
+                                            <input class="form-check-input" type="checkbox" name="q2" id="q2f" value="ui_ux">
+                                            <label class="form-check-label" for="q2f">UI/UX Design</label>
+                                        </div>
+                                        <div class="form-check mb-3">
+                                            <input class="form-check-input" type="checkbox" name="q2" id="q2g" value="blockchain">
+                                            <label class="form-check-label" for="q2g">Blockchain</label>
+                                        </div>
+                                        <div class="form-check mb-3">
+                                            <input class="form-check-input" type="checkbox" name="q2" id="q2h" value="game_dev">
+                                            <label class="form-check-label" for="q2h">Game Development</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Question 3: Govt Exam Type (Shown if govt selected) -->
+                            <div class="question-step d-none" data-question="3" data-show-if="govt">
+                                <h4 class="mb-4">3. Which government exam are you preparing for? (Select all that apply)</h4>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-check mb-3">
+                                            <input class="form-check-input" type="checkbox" name="q3" id="q3a" value="upsc">
+                                            <label class="form-check-label" for="q3a">UPSC Civil Services</label>
+                                        </div>
+                                        <div class="form-check mb-3">
+                                            <input class="form-check-input" type="checkbox" name="q3" id="q3b" value="ssc">
+                                            <label class="form-check-label" for="q3b">SSC (CGL, CHSL)</label>
+                                        </div>
+                                        <div class="form-check mb-3">
+                                            <input class="form-check-input" type="checkbox" name="q3" id="q3c" value="railway">
+                                            <label class="form-check-label" for="q3c">Railway Exams</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-check mb-3">
+                                            <input class="form-check-input" type="checkbox" name="q3" id="q3d" value="banking">
+                                            <label class="form-check-label" for="q3d">Banking Exams (IBPS, SBI)</label>
+                                        </div>
+                                        <div class="form-check mb-3">
+                                            <input class="form-check-input" type="checkbox" name="q3" id="q3e" value="state_psc">
+                                            <label class="form-check-label" for="q3e">State PSC</label>
+                                        </div>
+                                        <div class="form-check mb-3">
+                                            <input class="form-check-input" type="checkbox" name="q3" id="q3f" value="defence">
+                                            <label class="form-check-label" for="q3f">Defence Exams</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Question 4: Business Type (Shown if business selected) -->
+                            <div class="question-step d-none" data-question="4" data-show-if="business">
+                                <h4 class="mb-4">4. What type of business interests you?</h4>
+                                <div class="form-check mb-3">
+                                    <input class="form-check-input" type="radio" name="q4" id="q4a" value="tech_startup">
+                                    <label class="form-check-label" for="q4a">Tech Startup / SaaS</label>
+                                </div>
+                                <div class="form-check mb-3">
+                                    <input class="form-check-input" type="radio" name="q4" id="q4b" value="ecommerce">
+                                    <label class="form-check-label" for="q4b">E-commerce / D2C Brand</label>
+                                </div>
+                                <div class="form-check mb-3">
+                                    <input class="form-check-input" type="radio" name="q4" id="q4c" value="services">
+                                    <label class="form-check-label" for="q4c">Services / Consulting</label>
+                                </div>
+                                <div class="form-check mb-3">
+                                    <input class="form-check-input" type="radio" name="q4" id="q4d" value="digital_marketing">
+                                    <label class="form-check-label" for="q4d">Digital Marketing Agency</label>
+                                </div>
+                            </div>
+
+                            <!-- Question 5: Experience Level -->
+                            <div class="question-step d-none" data-question="5" data-show-if="tech,engg">
+                                <h4 class="mb-4">5. What is your current experience level?</h4>
+                                <div class="form-check mb-3">
+                                    <input class="form-check-input" type="radio" name="q5" id="q5a" value="beginner">
+                                    <label class="form-check-label" for="q5a">Complete beginner - never coded before</label>
+                                </div>
+                                <div class="form-check mb-3">
+                                    <input class="form-check-input" type="radio" name="q5" id="q5b" value="some_knowledge">
+                                    <label class="form-check-label" for="q5b">Some knowledge - basics of programming</label>
+                                </div>
+                                <div class="form-check mb-3">
+                                    <input class="form-check-input" type="radio" name="q5" id="q5c" value="intermediate">
+                                    <label class="form-check-label" for="q5c">Intermediate - worked on a few projects</label>
+                                </div>
+                                <div class="form-check mb-3">
+                                    <input class="form-check-input" type="radio" name="q5" id="q5d" value="advanced">
+                                    <label class="form-check-label" for="q5d">Advanced - professional experience</label>
+                                </div>
+                            </div>
+
+                            <!-- Question 6: Study Time -->
+                            <div class="question-step d-none" data-question="6" data-show-if="any">
+                                <h4 class="mb-4">6. How much time can you dedicate to learning daily?</h4>
+                                <div class="form-check mb-3">
+                                    <input class="form-check-input" type="radio" name="q6" id="q6a" value="1">
+                                    <label class="form-check-label" for="q6a">Less than 1 hour</label>
+                                </div>
+                                <div class="form-check mb-3">
+                                    <input class="form-check-input" type="radio" name="q6" id="q6b" value="2">
+                                    <label class="form-check-label" for="q6b">1-2 hours</label>
+                                </div>
+                                <div class="form-check mb-3">
+                                    <input class="form-check-input" type="radio" name="q6" id="q6c" value="4">
+                                    <label class="form-check-label" for="q6c">2-4 hours</label>
+                                </div>
+                                <div class="form-check mb-3">
+                                    <input class="form-check-input" type="radio" name="q6" id="q6d" value="6+">
+                                    <label class="form-check-label" for="q6d">4+ hours (full-time study)</label>
+                                </div>
+                            </div>
+
+                            <!-- Question 7: Budget -->
+                            <div class="question-step d-none" data-question="7" data-show-if="any">
+                                <h4 class="mb-4">7. What is your budget for learning?</h4>
+                                <div class="form-check mb-3">
+                                    <input class="form-check-input" type="radio" name="q7" id="q7a" value="free">
+                                    <label class="form-check-label" for="q7a">Free courses only</label>
+                                </div>
+                                <div class="form-check mb-3">
+                                    <input class="form-check-input" type="radio" name="q7" id="q7b" value="low">
+                                    <label class="form-check-label" for="q7b">Under ₹1,000</label>
+                                </div>
+                                <div class="form-check mb-3">
+                                    <input class="form-check-input" type="radio" name="q7" id="q7c" value="medium">
+                                    <label class="form-check-label" for="q7c">₹1,000 - ₹5,000</label>
+                                </div>
+                                <div class="form-check mb-3">
+                                    <input class="form-check-input" type="radio" name="q7" id="q7d" value="high">
+                                    <label class="form-check-label" for="q7d">₹5,000 - ₹15,000</label>
+                                </div>
+                                <div class="form-check mb-3">
+                                    <input class="form-check-input" type="radio" name="q7" id="q7e" value="premium">
+                                    <label class="form-check-label" for="q7e">Ready to invest in premium courses</label>
+                                </div>
+                            </div>
+
+                            <!-- Question 8: Programming Languages (for tech) -->
+                            <div class="question-step d-none" data-question="8" data-show-if="tech">
+                                <h4 class="mb-4">8. Which programming languages interest you? (Select all that apply)</h4>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-check mb-3">
+                                            <input class="form-check-input" type="checkbox" name="q8" id="q8a" value="python">
+                                            <label class="form-check-label" for="q8a">Python</label>
+                                        </div>
+                                        <div class="form-check mb-3">
+                                            <input class="form-check-input" type="checkbox" name="q8" id="q8b" value="javascript">
+                                            <label class="form-check-label" for="q8b">JavaScript</label>
+                                        </div>
+                                        <div class="form-check mb-3">
+                                            <input class="form-check-input" type="checkbox" name="q8" id="q8c" value="java">
+                                            <label class="form-check-label" for="q8c">Java</label>
+                                        </div>
+                                        <div class="form-check mb-3">
+                                            <input class="form-check-input" type="checkbox" name="q8" id="q8d" value="cpp">
+                                            <label class="form-check-label" for="q8d">C++</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-check mb-3">
+                                            <input class="form-check-input" type="checkbox" name="q8" id="q8e" value="go">
+                                            <label class="form-check-label" for="q8e">Go / Golang</label>
+                                        </div>
+                                        <div class="form-check mb-3">
+                                            <input class="form-check-input" type="checkbox" name="q8" id="q8f" value="swift">
+                                            <label class="form-check-label" for="q8f">Swift (iOS)</label>
+                                        </div>
+                                        <div class="form-check mb-3">
+                                            <input class="form-check-input" type="checkbox" name="q8" id="q8g" value="kotlin">
+                                            <label class="form-check-label" for="q8g">Kotlin (Android)</label>
+                                        </div>
+                                        <div class="form-check mb-3">
+                                            <input class="form-check-input" type="checkbox" name="q8" id="q8h" value="dart">
+                                            <label class="form-check-label" for="q8h">Dart (Flutter)</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Question 9: Learning Format -->
+                            <div class="question-step d-none" data-question="9" data-show-if="any">
+                                <h4 class="mb-4">9. What is your preferred learning format?</h4>
+                                <div class="form-check mb-3">
+                                    <input class="form-check-input" type="radio" name="q9" id="q9a" value="video">
+                                    <label class="form-check-label" for="q9a">Video tutorials with hands-on projects</label>
+                                </div>
+                                <div class="form-check mb-3">
+                                    <input class="form-check-input" type="radio" name="q9" id="q9b" value="text">
+                                    <label class="form-check-label" for="q9b">Reading materials & documentation</label>
+                                </div>
+                                <div class="form-check mb-3">
+                                    <input class="form-check-input" type="radio" name="q9" id="q9c" value="interactive">
+                                    <label class="form-check-label" for="q9c">Interactive coding exercises</label>
+                                </div>
+                                <div class="form-check mb-3">
+                                    <input class="form-check-input" type="radio" name="q9" id="q9d" value="mentor">
+                                    <label class="form-check-label" for="q9d">Live sessions with mentor support</label>
+                                </div>
+                                <div class="form-check mb-3">
+                                    <input class="form-check-input" type="radio" name="q9" id="q9e" value="mix">
+                                    <label class="form-check-label" for="q9e">Mix of all formats</label>
+                                </div>
+                            </div>
+
+                            <!-- Question 10: Learning Goal Timeline -->
+                            <div class="question-step d-none" data-question="10" data-show-if="any">
+                                <h4 class="mb-4">10. When do you want to achieve your learning goal?</h4>
+                                <div class="form-check mb-3">
+                                    <input class="form-check-input" type="radio" name="q10" id="q10a" value="1month">
+                                    <label class="form-check-label" for="q10a">Within 1 month (intensive)</label>
+                                </div>
+                                <div class="form-check mb-3">
+                                    <input class="form-check-input" type="radio" name="q10" id="q10b" value="3months">
+                                    <label class="form-check-label" for="q10b">Within 3 months</label>
+                                </div>
+                                <div class="form-check mb-3">
+                                    <input class="form-check-input" type="radio" name="q10" id="q10c" value="6months">
+                                    <label class="form-check-label" for="q10c">Within 6 months</label>
+                                </div>
+                                <div class="form-check mb-3">
+                                    <input class="form-check-input" type="radio" name="q10" id="q10d" value="1year">
+                                    <label class="form-check-label" for="q10d">Within 1 year</label>
+                                </div>
+                                <div class="form-check mb-3">
+                                    <input class="form-check-input" type="radio" name="q10" id="q10e" value="flexible">
+                                    <label class="form-check-label" for="q10e">Flexible - just want to learn</label>
+                                </div>
+                            </div>
+
+                            <!-- Navigation Buttons -->
+                            <div class="d-flex justify-content-between mt-5">
+                                <button type="button" class="btn btn-secondary" id="prevBtn" onclick="prevQuestion()">Previous</button>
+                                <button type="button" class="btn btn-primary" id="nextBtn" onclick="nextQuestion()">Next</button>
+                                <button type="submit" class="btn btn-success d-none" id="submitBtn">Get Recommendations</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Results Section (Hidden initially) -->
+        <div class="row mt-5 d-none" id="resultsSection">
+            <div class="col-12 text-center mb-4">
+                <h2><i class="fas fa-robot me-2"></i>Your Personalized Course Recommendations</h2>
+                <p class="text-muted">Powered by AI and Machine Learning</p>
+            </div>
+            <div class="col-12" id="recommendationsContainer">
+                <!-- Recommendations will be loaded here -->
+            </div>
+            <div class="col-12 text-center mt-4">
+                <a href="/courses" class="btn btn-primary btn-lg me-2"><i class="fas fa-book me-2"></i>Browse All Courses</a>
+                <a href="/dashboard" class="btn btn-outline-secondary btn-lg"><i class="fas fa-tachometer-alt me-2"></i>Go to Dashboard</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Track which questions to show based on selections
+let activeGoals = [];
+let questionOrder = [1]; // Start with question 1, then add others based on selection
+
+function updateQuestionVisibility() {
+    activeGoals = [];
+    
+    // Get selected goals from Q1
+    document.querySelectorAll('.goal-selector:checked').forEach(cb => {
+        activeGoals.push(cb.value);
+    });
+    
+    // Build question order based on selected goals
+    questionOrder = [1]; // Always show Q1
+    
+    // Add Q2 (Tech) if tech is selected
+    if (activeGoals.includes('tech') || activeGoals.includes('engg')) {
+        questionOrder.push(2);
+    }
+    
+    // Add Q3 (Govt) if govt is selected
+    if (activeGoals.includes('govt')) {
+        questionOrder.push(3);
+    }
+    
+    // Add Q4 (Business) if business is selected
+    if (activeGoals.includes('business')) {
+        questionOrder.push(4);
+    }
+    
+    // Add Q5 (Experience) if tech or engg selected
+    if (activeGoals.includes('tech') || activeGoals.includes('engg')) {
+        questionOrder.push(5);
+    }
+    
+    // Add Q6 (Time) - always show
+    questionOrder.push(6);
+    
+    // Add Q7 (Budget) - always show
+    questionOrder.push(7);
+    
+    // Add Q8 (Languages) if tech selected
+    if (activeGoals.includes('tech')) {
+        questionOrder.push(8);
+    }
+    
+    // Add Q9 (Learning Format) - always show
+    questionOrder.push(9);
+    
+    // Add Q10 (Timeline) - always show
+    questionOrder.push(10);
+    
+    // Update total questions display
+    document.getElementById('totalQuestions').textContent = questionOrder.length;
+}
+
+let currentQuestionIndex = 0;
+
+function showQuestion(index) {
+    // Hide all questions
+    document.querySelectorAll('.question-step').forEach(el => {
+        el.classList.add('d-none');
+    });
+    
+    // Show current question based on order
+    const questionNum = questionOrder[index];
+    document.querySelector(`[data-question="${questionNum}"]`).classList.remove('d-none');
+    
+    // Update button visibility
+    document.getElementById('prevBtn').classList.toggle('d-none', index === 0);
+    document.getElementById('nextBtn').classList.toggle('d-none', index === questionOrder.length - 1);
+    document.getElementById('submitBtn').classList.toggle('d-none', index !== questionOrder.length - 1);
+    
+    // Update progress
+    const progress = ((index + 1) / questionOrder.length) * 100;
+    document.getElementById('progressBar').style.width = progress + '%';
+    document.getElementById('progressBar').textContent = Math.round(progress) + '%';
+    document.getElementById('currentQuestion').textContent = index + 1;
+}
+
+function nextQuestion() {
+    const currentQuestionNum = questionOrder[currentQuestionIndex];
+    const currentEl = document.querySelector(`[data-question="${currentQuestionNum}"]`);
+    
+    // Check if it's Q1 - if so, update visibility before proceeding
+    if (currentQuestionNum === 1) {
+        updateQuestionVisibility();
+    }
+    
+    // Validate required questions
+    const radioInputs = currentEl.querySelectorAll('input[type="radio"]');
+    const checkboxInputs = currentEl.querySelectorAll('input[type="checkbox"]');
+    
+    // For required questions (Q1), at least one must be selected
+    if (currentEl.dataset.type === 'required') {
+        const checked = currentEl.querySelector('input:checked');
+        if (!checked) {
+            alert('Please select at least one option to continue');
+            return;
+        }
+    }
+    
+    if (currentQuestionIndex < questionOrder.length - 1) {
+        currentQuestionIndex++;
+        showQuestion(currentQuestionIndex);
+    }
+}
+
+function prevQuestion() {
+    if (currentQuestionIndex > 0) {
+        currentQuestionIndex--;
+        showQuestion(currentQuestionIndex);
+    }
+}
+
+// Handle form submission
+document.getElementById('questionnaireForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    // Collect all answers
+    const formData = new FormData(this);
+    const answers = {};
+    
+    for (let [key, value] of formData.entries()) {
+        if (!answers[key]) {
+            answers[key] = [];
+        }
+        answers[key].push(value);
+    }
+    
+    // Add active goals info
+    answers.goals = activeGoals;
+    
+    // Show loading with ML-specific message
+    const submitBtn = document.getElementById('submitBtn');
+    const originalText = submitBtn.innerHTML;
+    submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span><i class="fas fa-robot me-1"></i>AI is analyzing your preferences...';
+    submitBtn.disabled = true;
+    
+    try {
+        const response = await fetch('/ai/recommend/submit', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(answers)
+        });
+        
+        // Check if response is JSON
+        const contentType = response.headers.get('content-type');
+        if (!contentType || !contentType.includes('application/json')) {
+            // Response is not JSON (likely login page)
+            showNotification('error', 'Session Expired', 'Your session has expired. Please log in again.');
+            setTimeout(() => {
+                window.location.href = '/login';
+            }, 2000);
+            return;
+        }
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            // Hide form and show results
+            document.getElementById('questionnaireForm').classList.add('d-none');
+            document.getElementById('resultsSection').classList.remove('d-none');
+            
+            // Update results container
+            const container = document.getElementById('recommendationsContainer');
+            container.innerHTML = data.recommendations_html;
+            
+            // Scroll to results
+            document.getElementById('resultsSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            
+            // Show ML status notification
+            if (data.ml_used) {
+                showNotification('success', 'AI Recommendations Generated', 'Machine learning algorithms analyzed your preferences and learning patterns to provide personalized suggestions.');
+            } else {
+                showNotification('info', 'Recommendations Generated', 'Based on your questionnaire answers, we found courses matching your interests.');
+            }
+        } else {
+            showNotification('error', 'Error', data.error || 'Failed to generate recommendations');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        showNotification('error', 'Connection Error', 'Failed to connect to the server. Please try again.');
+    }
+    
+    submitBtn.innerHTML = originalText;
+    submitBtn.disabled = false;
+});
+
+// Notification function
+function showNotification(type, title, message) {
+    const alertClass = type === 'success' ? 'alert-success' : type === 'error' ? 'alert-danger' : 'alert-info';
+    const icon = type === 'success' ? 'fa-check-circle' : type === 'error' ? 'fa-exclamation-circle' : 'fa-info-circle';
+    
+    const notification = document.createElement('div');
+    notification.className = `alert ${alertClass} alert-dismissible fade show position-fixed`;
+    notification.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
+    notification.innerHTML = `
+        <h6 class="alert-heading"><i class="fas ${icon} me-2"></i>${title}</h6>
+        <p class="mb-0 small">${message}</p>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    `;
+    
+    document.body.appendChild(notification);
+    
+    // Auto-remove after 5 seconds
+    setTimeout(() => {
+        if (notification.parentNode) {
+            notification.remove();
+        }
+    }, 5000);
+}
+
+// Initialize - show first question
+updateQuestionVisibility();
+showQuestion(0);
+</script>
+
+{% endblock %}

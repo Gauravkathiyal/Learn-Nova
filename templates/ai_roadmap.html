@@ -1,0 +1,611 @@
+{% extends "index.html" %}
+{% block title %}AI Study Roadmap - LearnNova{% endblock %}
+{% block content %}
+
+<!-- Mermaid.js for flowcharts -->
+<script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        mermaid.initialize({ startOnLoad: true, theme: 'default' });
+    });
+</script>
+
+<style>
+#spinner { display: none !important; }
+.roadmap-timeline {
+    position: relative;
+    padding-left: 30px;
+}
+.roadmap-timeline::before {
+    content: '';
+    position: absolute;
+    left: 15px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: #e9ecef;
+}
+.roadmap-phase {
+    position: relative;
+    margin-bottom: 30px;
+}
+.roadmap-phase::before {
+    content: '';
+    position: absolute;
+    left: -23px;
+    top: 20px;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: #0d6efd;
+    border: 3px solid #fff;
+    box-shadow: 0 0 0 2px #0d6efd;
+}
+.phase-card {
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+.phase-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1) !important;
+}
+.output-box {
+    background: #f8f9fa;
+    border-left: 4px solid #0d6efd;
+    padding: 15px;
+    border-radius: 0 8px 8px 0;
+}
+.action-box {
+    background: #fff3cd;
+    border-left: 4px solid #ffc107;
+    padding: 15px;
+    border-radius: 0 8px 8px 0;
+}
+.task-item {
+    border-left: 3px solid #198754;
+    padding: 10px 15px;
+    margin-bottom: 10px;
+    background: #f8f9fa;
+    border-radius: 0 8px 8px 0;
+}
+.task-item.completed {
+    border-left-color: #198754;
+    background: #d1e7dd;
+}
+.task-item.pending {
+    border-left-color: #ffc107;
+    background: #fff3cd;
+}
+.task-item.important {
+    border-left-color: #dc3545;
+    background: #f8d7da;
+}
+</style>
+
+<!-- Header Start -->
+<div class="container-fluid bg-primary py-5 mb-5" style="background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('/img/carousel-2.jpeg'); background-size: cover; background-position: center; position: relative;">
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-10 text-center">
+                <a href="/dashboard" class="btn btn-outline-light btn-sm mb-3" style="position: absolute; top: 20px; left: 20px; z-index: 10;">
+                    <i class="fa fa-arrow-left me-2"></i>Back to Dashboard
+                </a>
+                <h1 class="display-3 animated slideInDown" style="color: #ffffff !important; text-shadow: 2px 2px 4px rgba(0,0,0,0.5);">📍 AI Study Roadmap</h1>
+                <p class="mb-4" style="color: #ffffff !important; text-shadow: 1px 1px 2px rgba(0,0,0,0.5);">Get a personalized roadmap to achieve your goals - What you need to do to succeed!</p>
+                
+                <!-- Quick Explanation -->
+                <div class="row justify-content-center mt-4">
+                    <div class="col-md-5 mb-3">
+                        <div class="bg-white bg-opacity-10 rounded p-3 text-start">
+                            <h6 style="color: #ffffff !important; text-shadow: 1px 1px 2px rgba(0,0,0,0.5);" class="mb-2">📍 <strong>Roadmap</strong> = What to achieve</h6>
+                            <small style="color: rgba(255,255,255,0.8) !important;">Your learning path with phases & milestones</small>
+                        </div>
+                    </div>
+                    <div class="col-md-5 mb-3">
+                        <div class="bg-white bg-opacity-10 rounded p-3 text-start">
+                            <h6 style="color: #ffffff !important; text-shadow: 1px 1px 2px rgba(0,0,0,0.5);" class="mb-2">📅 <strong>Timetable</strong> = When to do it</h6>
+                            <small style="color: rgba(255,255,255,0.8) !important;">Your daily study schedule</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Header End -->
+
+<div class="container-xxl py-5">
+    <div class="container">
+        <!-- Progress Bar -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="progress" style="height: 25px;">
+                    <div class="progress-bar bg-primary progress-bar-striped progress-bar-animated" 
+                         id="progressBar" role="progressbar" style="width: 0%">0%</div>
+                </div>
+                <p class="text-center mt-2">Step <span id="currentQuestion">1</span> of <span id="totalQuestions">5</span></p>
+            </div>
+        </div>
+
+        <!-- Questionnaire Form -->
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <div class="card shadow-lg border-0">
+                    <div class="card-body p-5">
+                        <form id="roadmapForm">
+                            <!-- Step 1: Roadmap Type Selection -->
+                            <div class="question-step" data-question="1" data-type="required">
+                                <h4 class="mb-4">1. What type of roadmap do you need?</h4>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-check mb-3 p-3 border rounded roadmap-type-option">
+                                            <input class="form-check-input" type="radio" name="roadmap_type" id="rt1" value="study">
+                                            <label class="form-check-label" for="rt1">
+                                                <strong>📚 Study Roadmap</strong><br>
+                                                <small class="text-muted">For exams & skills (UPSC, SSC, JEE, Programming)</small>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-check mb-3 p-3 border rounded roadmap-type-option">
+                                            <input class="form-check-input" type="radio" name="roadmap_type" id="rt2" value="project">
+                                            <label class="form-check-label" for="rt2">
+                                                <strong>💻 Project Roadmap</strong><br>
+                                                <small class="text-muted">Build apps & websites (Web, Mobile, AI)</small>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-check mb-3 p-3 border rounded roadmap-type-option">
+                                            <input class="form-check-input" type="radio" name="roadmap_type" id="rt3" value="career">
+                                            <label class="form-check-label" for="rt3">
+                                                <strong>🚀 Career Roadmap</strong><br>
+                                                <small class="text-muted">Long-term professional growth</small>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Step 2: Target Goal -->
+                            <div class="question-step d-none" data-question="2" data-show-if="study">
+                                <h4 class="mb-4">2. What is your target goal?</h4>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <h6 class="text-primary mb-3">💻 Tech & Development</h6>
+                                        <div class="form-check mb-3">
+                                            <input class="form-check-input" type="radio" name="target_exam" id="te9" value="Programming">
+                                            <label class="form-check-label" for="te9">💻 Programming & DSA</label>
+                                        </div>
+                                        <div class="form-check mb-3">
+                                            <input class="form-check-input" type="radio" name="target_exam" id="te10" value="Data Science">
+                                            <label class="form-check-label" for="te10">📊 Data Science & AI</label>
+                                        </div>
+                                        <div class="form-check mb-3">
+                                            <input class="form-check-input" type="radio" name="target_exam" id="te11" value="Web Development">
+                                            <label class="form-check-label" for="te11">🌐 Web Development</label>
+                                        </div>
+                                        <div class="form-check mb-3">
+                                            <input class="form-check-input" type="radio" name="target_exam" id="te12" value="Machine Learning">
+                                            <label class="form-check-label" for="te12">🤖 Machine Learning</label>
+                                        </div>
+                                        <div class="form-check mb-3">
+                                            <input class="form-check-input" type="radio" name="target_exam" id="te13" value="Cyber Security">
+                                            <label class="form-check-label" for="te13">🔒 Cyber Security</label>
+                                        </div>
+                                        <div class="form-check mb-3">
+                                            <input class="form-check-input" type="radio" name="target_exam" id="te14" value="Cloud Computing">
+                                            <label class="form-check-label" for="te14">☁️ Cloud Computing</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <h6 class="text-primary mb-3">🎓 Exams & Engineering</h6>
+                                        <div class="form-check mb-3">
+                                            <input class="form-check-input" type="radio" name="target_exam" id="te1" value="UPSC">
+                                            <label class="form-check-label" for="te1">🏛️ UPSC Civil Services</label>
+                                        </div>
+                                        <div class="form-check mb-3">
+                                            <input class="form-check-input" type="radio" name="target_exam" id="te5" value="JEE">
+                                            <label class="form-check-label" for="te5">🎯 JEE (Engineering)</label>
+                                        </div>
+                                        <div class="form-check mb-3">
+                                            <input class="form-check-input" type="radio" name="target_exam" id="te6" value="NEET">
+                                            <label class="form-check-label" for="te6">🏥 NEET (Medical)</label>
+                                        </div>
+                                        <div class="form-check mb-3">
+                                            <input class="form-check-input" type="radio" name="target_exam" id="te15" value="Placement">
+                                            <label class="form-check-label" for="te15">💼 Placement Prep</label>
+                                        </div>
+                                        <div class="form-check mb-3">
+                                            <input class="form-check-input" type="radio" name="target_exam" id="te16" value="Competitive">
+                                            <label class="form-check-label" for="te16">📝 Competitive Exams</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Step 2: Project Type -->
+                            <div class="question-step d-none" data-question="2" data-show-if="project">
+                                <h4 class="mb-4">2. What type of project do you want to build?</h4>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-check mb-3">
+                                            <input class="form-check-input" type="radio" name="project_type" id="pt1" value="web_app">
+                                            <label class="form-check-label" for="pt1">Web Application</label>
+                                        </div>
+                                        <div class="form-check mb-3">
+                                            <input class="form-check-input" type="radio" name="project_type" id="pt2" value="mobile_app">
+                                            <label class="form-check-label" for="pt2">Mobile App</label>
+                                        </div>
+                                        <div class="form-check mb-3">
+                                            <input class="form-check-input" type="radio" name="project_type" id="pt3" value="ai_ml">
+                                            <label class="form-check-label" for="pt3">AI/ML Project</label>
+                                        </div>
+                                        <div class="form-check mb-3">
+                                            <input class="form-check-input" type="radio" name="project_type" id="pt4" value="ecommerce">
+                                            <label class="form-check-label" for="pt4">E-commerce Platform</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-check mb-3">
+                                            <input class="form-check-input" type="radio" name="project_type" id="pt5" value="learning_platform">
+                                            <label class="form-check-label" for="pt5">Learning Platform (like LearnNova)</label>
+                                        </div>
+                                        <div class="form-check mb-3">
+                                            <input class="form-check-input" type="radio" name="project_type" id="pt6" value="saas">
+                                            <label class="form-check-label" for="pt6">SaaS Product</label>
+                                        </div>
+                                        <div class="form-check mb-3">
+                                            <input class="form-check-input" type="radio" name="project_type" id="pt7" value="portfolio">
+                                            <label class="form-check-label" for="pt7">Portfolio Website</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Step 2: Career Goal -->
+                            <div class="question-step d-none" data-question="2" data-show-if="career">
+                                <h4 class="mb-4">2. What is your career goal?</h4>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-check mb-3">
+                                            <input class="form-check-input" type="radio" name="career_goal" id="cg1" value="software_engineer">
+                                            <label class="form-check-label" for="cg1">Software Engineer</label>
+                                        </div>
+                                        <div class="form-check mb-3">
+                                            <input class="form-check-input" type="radio" name="career_goal" id="cg2" value="data_scientist">
+                                            <label class="form-check-label" for="cg2">Data Scientist</label>
+                                        </div>
+                                        <div class="form-check mb-3">
+                                            <input class="form-check-input" type="radio" name="career_goal" id="cg3" value="ai_ml_engineer">
+                                            <label class="form-check-label" for="cg3">AI/ML Engineer</label>
+                                        </div>
+                                        <div class="form-check mb-3">
+                                            <input class="form-check-input" type="radio" name="career_goal" id="cg4" value="fullstack">
+                                            <label class="form-check-label" for="cg4">Full Stack Developer</label>
+                                        </div>
+                                        <div class="form-check mb-3">
+                                            <input class="form-check-input" type="radio" name="career_goal" id="cg5" value="backend">
+                                            <label class="form-check-label" for="cg5">Backend Developer</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-check mb-3">
+                                            <input class="form-check-input" type="radio" name="career_goal" id="cg6" value="frontend">
+                                            <label class="form-check-label" for="cg6">Frontend Developer</label>
+                                        </div>
+                                        <div class="form-check mb-3">
+                                            <input class="form-check-input" type="radio" name="career_goal" id="cg7" value="mobile_dev">
+                                            <label class="form-check-label" for="cg7">Mobile Developer</label>
+                                        </div>
+                                        <div class="form-check mb-3">
+                                            <input class="form-check-input" type="radio" name="career_goal" id="cg8" value="devops">
+                                            <label class="form-check-label" for="cg8">DevOps Engineer</label>
+                                        </div>
+                                        <div class="form-check mb-3">
+                                            <input class="form-check-input" type="radio" name="career_goal" id="cg9" value="cybersecurity">
+                                            <label class="form-check-label" for="cg9">Cybersecurity Expert</label>
+                                        </div>
+                                        <div class="form-check mb-3">
+                                            <input class="form-check-input" type="radio" name="career_goal" id="cg10" value="startup">
+                                            <label class="form-check-label" for="cg10">Build My Own Startup</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Step 3: Current Level -->
+                            <div class="question-step d-none" data-question="3" data-show-if="study,project,career">
+                                <h4 class="mb-4">3. What is your current preparation/skill level?</h4>
+                                <div class="form-check mb-3 p-3 border rounded">
+                                    <input class="form-check-input" type="radio" name="current_level" id="cl1" value="beginner">
+                                    <label class="form-check-label" for="cl1">
+                                        <strong>Complete Beginner</strong> - Just started, no prior knowledge
+                                    </label>
+                                </div>
+                                <div class="form-check mb-3 p-3 border rounded">
+                                    <input class="form-check-input" type="radio" name="current_level" id="cl2" value="some_knowledge">
+                                    <label class="form-check-label" for="cl2">
+                                        <strong>Some Knowledge</strong> - Know the basics, need to strengthen
+                                    </label>
+                                </div>
+                                <div class="form-check mb-3 p-3 border rounded">
+                                    <input class="form-check-input" type="radio" name="current_level" id="cl3" value="intermediate">
+                                    <label class="form-check-label" for="cl3">
+                                        <strong>Intermediate</strong> - Can apply concepts, need practice
+                                    </label>
+                                </div>
+                                <div class="form-check mb-3 p-3 border rounded">
+                                    <input class="form-check-input" type="radio" name="current_level" id="cl4" value="advanced">
+                                    <label class="form-check-label" for="cl4">
+                                        <strong>Advanced</strong> - Ready for expert-level topics
+                                    </label>
+                                </div>
+                            </div>
+
+                            <!-- Step 4: Timeline -->
+                            <div class="question-step d-none" data-question="4" data-show-if="study,project,career">
+                                <h4 class="mb-4">4. When do you want to achieve your goal?</h4>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-check mb-3">
+                                            <input class="form-check-input" type="radio" name="timeline" id="tl1" value="1month">
+                                            <label class="form-check-label" for="tl1">Within 1 month (Intensive)</label>
+                                        </div>
+                                        <div class="form-check mb-3">
+                                            <input class="form-check-input" type="radio" name="timeline" id="tl2" value="3months">
+                                            <label class="form-check-label" for="tl2">Within 3 months</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-check mb-3">
+                                            <input class="form-check-input" type="radio" name="timeline" id="tl3" value="6months">
+                                            <label class="form-check-label" for="tl3">Within 6 months</label>
+                                        </div>
+                                        <div class="form-check mb-3">
+                                            <input class="form-check-input" type="radio" name="timeline" id="tl4" value="1year">
+                                            <label class="form-check-label" for="tl4">Within 1 year</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Step 5: Study Hours -->
+                            <div class="question-step d-none" data-question="5" data-show-if="study,project,career">
+                                <h4 class="mb-4">5. How much time can you dedicate daily?</h4>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-check mb-3">
+                                            <input class="form-check-input" type="radio" name="study_hours" id="sh1" value="2">
+                                            <label class="form-check-label" for="sh1">Less than 2 hours</label>
+                                        </div>
+                                        <div class="form-check mb-3">
+                                            <input class="form-check-input" type="radio" name="study_hours" id="sh2" value="4">
+                                            <label class="form-check-label" for="sh2">2-4 hours</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-check mb-3">
+                                            <input class="form-check-input" type="radio" name="study_hours" id="sh3" value="6">
+                                            <label class="form-check-label" for="sh3">4-6 hours</label>
+                                        </div>
+                                        <div class="form-check mb-3">
+                                            <input class="form-check-input" type="radio" name="study_hours" id="sh4" value="8">
+                                            <label class="form-check-label" for="sh4">6-8 hours (Full-time)</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Navigation Buttons -->
+                            <div class="d-flex justify-content-between mt-5">
+                                <button type="button" class="btn btn-secondary" id="prevBtn" onclick="prevQuestion()">Previous</button>
+                                <button type="button" class="btn btn-primary" id="nextBtn" onclick="nextQuestion()">Next</button>
+                                <button type="submit" class="btn btn-success d-none" id="submitBtn">Generate My Roadmap</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Loading Spinner -->
+        <div id="loadingSpinner" class="text-center py-5 d-none">
+            <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            <p class="mt-3 text-muted">Generating your personalized roadmap with AI...</p>
+        </div>
+
+        <!-- Results Section (Hidden initially) -->
+        <div class="row mt-5 d-none" id="resultsSection">
+            <div class="col-12">
+                <div class="card border-0 shadow-lg">
+                    <div class="card-body p-5">
+                        <div class="text-center mb-5">
+                            <h2 id="roadmapTitle" class="mb-2"></h2>
+                            <p id="roadmapSubtitle" class="text-muted"></p>
+                            <div class="badge bg-primary fs-6" id="roadmapMeta"></div>
+                        </div>
+                        
+                        <div id="roadmapContent" class="roadmap-timeline">
+                            <!-- Roadmap content will be inserted here -->
+                        </div>
+
+                        <div class="text-center mt-5">
+                            <a href="/ai/recommend" class="btn btn-outline-primary me-2">
+                                <i class="fa fa-graduation-cap me-2"></i>Get Course Recommendations
+                            </a>
+                            <a href="/timetable" class="btn btn-primary me-2">
+                                <i class="fa fa-calendar me-2"></i>Create Study Timetable
+                            </a>
+                            <a href="/dashboard" class="btn btn-secondary">
+                                <i class="fa fa-home me-2"></i>Back to Dashboard
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+let questionOrder = [1, 2, 3, 4, 5];
+let currentQuestionIndex = 0;
+let selectedRoadmapType = '';
+
+function updateQuestionVisibility() {
+    // Get selected roadmap type
+    const selectedType = document.querySelector('input[name="roadmap_type"]:checked');
+    if (selectedType) {
+        selectedRoadmapType = selectedType.value;
+    }
+    
+    // Update question order based on selections
+    questionOrder = [1]; // Always show Q1
+    
+    // Add Q2 (Target) - always show after Q1
+    questionOrder.push(2);
+    
+    // Add Q3, Q4, Q5 - always show
+    questionOrder.push(3);
+    questionOrder.push(4);
+    questionOrder.push(5);
+    
+    // Update total questions display
+    document.getElementById('totalQuestions').textContent = questionOrder.length;
+}
+
+function showQuestion(index) {
+    // Hide all questions
+    document.querySelectorAll('.question-step').forEach(el => {
+        el.classList.add('d-none');
+    });
+    
+    // Show current question based on order
+    const questionNum = questionOrder[index];
+    const questionEl = document.querySelector(`[data-question="${questionNum}"]`);
+    
+    if (questionEl) {
+        // Check if this question should be shown based on roadmap type
+        const showIf = questionEl.dataset.showIf;
+        if (showIf) {
+            const types = showIf.split(',');
+            if (!types.includes(selectedRoadmapType) && selectedRoadmapType !== '') {
+                // Skip this question, go to next
+                if (index < questionOrder.length - 1) {
+                    currentQuestionIndex++;
+                    showQuestion(currentQuestionIndex);
+                    return;
+                }
+            }
+        }
+        questionEl.classList.remove('d-none');
+    }
+    
+    // Update button visibility
+    document.getElementById('prevBtn').classList.toggle('d-none', index === 0);
+    document.getElementById('nextBtn').classList.toggle('d-none', index === questionOrder.length - 1);
+    document.getElementById('submitBtn').classList.toggle('d-none', index !== questionOrder.length - 1);
+    
+    // Update progress
+    const progress = ((index + 1) / questionOrder.length) * 100;
+    document.getElementById('progressBar').style.width = progress + '%';
+    document.getElementById('progressBar').textContent = Math.round(progress) + '%';
+    document.getElementById('currentQuestion').textContent = index + 1;
+}
+
+function nextQuestion() {
+    const currentQuestionNum = questionOrder[currentQuestionIndex];
+    const currentEl = document.querySelector(`[data-question="${currentQuestionNum}"]`);
+    
+    // Check if it's Q1 - if so, update visibility before proceeding
+    if (currentQuestionNum === 1) {
+        updateQuestionVisibility();
+    }
+    
+    // Validate required questions
+    const radioInputs = currentEl.querySelectorAll('input[type="radio"]');
+    const checked = currentEl.querySelector('input:checked');
+    
+    // For required questions (Q1), must be selected
+    if (currentEl.dataset.type === 'required') {
+        if (!checked) {
+            alert('Please select an option to continue');
+            return;
+        }
+    }
+    
+    if (currentQuestionIndex < questionOrder.length - 1) {
+        currentQuestionIndex++;
+        showQuestion(currentQuestionIndex);
+    }
+}
+
+function prevQuestion() {
+    if (currentQuestionIndex > 0) {
+        currentQuestionIndex--;
+        showQuestion(currentQuestionIndex);
+    }
+}
+
+// Handle form submission
+document.getElementById('roadmapForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    // Collect all answers
+    const formData = new FormData(this);
+    const data = {};
+    
+    for (let [key, value] of formData.entries()) {
+        data[key] = value;
+    }
+    
+    // Add roadmap type
+    data.roadmap_type = selectedRoadmapType;
+    
+    // Show loading
+    document.getElementById('submitBtn').innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Generating Roadmap...';
+    document.getElementById('submitBtn').disabled = true;
+    
+    try {
+        const response = await fetch('/ai/roadmap/generate', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+            document.getElementById('questionnaireForm')?.closest('.row')?.classList.add('d-none');
+            document.querySelector('.progress')?.closest('.row')?.classList.add('d-none');
+            document.getElementById('resultsSection').classList.remove('d-none');
+            
+            document.getElementById('roadmapTitle').textContent = result.roadmap.title;
+            document.getElementById('roadmapSubtitle').textContent = result.roadmap.subtitle || '';
+            document.getElementById('roadmapMeta').textContent = result.roadmap.meta || '';
+            document.getElementById('roadmapContent').innerHTML = result.roadmap.html;
+            
+            // Re-render Mermaid diagrams
+            if (typeof mermaid !== 'undefined') {
+                mermaid.init(undefined, document.querySelectorAll('.mermaid'));
+            }
+            
+            document.getElementById('resultsSection').scrollIntoView({ behavior: 'smooth' });
+        } else {
+            alert('Error: ' + result.error);
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert('An error occurred. Please try again.');
+    }
+    
+    document.getElementById('submitBtn').innerHTML = 'Generate My Roadmap';
+    document.getElementById('submitBtn').disabled = false;
+});
+</script>
+
+{% endblock %}

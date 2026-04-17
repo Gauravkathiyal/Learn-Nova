@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-1K34ZCR5M7"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-1K34ZCR5M7');
+    </script>
+    <meta charset="utf-8">
+    <title>LearnNova | AI Learning & Career Guidance Platform</title>
+    <meta
+        content="LearnNova is an AI powered learning and career guidance platform that provides personalized study roadmaps, smart timetables, performance analytics and courses for students preparing for competitive exams and tech careers."
+        name="description">
+    <meta content="" name="keywords">
+    <meta content="" name="description">
+
+    <!-- Favicon -->
+    <link href="img/favicon.ico" rel="icon">
+
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600&family=Nunito:wght@600;700;800&display=swap"
+        rel="stylesheet">
+
+    <!-- Icon Font Stylesheet -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- Libraries Stylesheet -->
+    <link href="lib/animate/animate.min.css" rel="stylesheet">
+    <link href="lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
+
+    <!-- Customized Bootstrap Stylesheet -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Template Stylesheet -->
+    <link href="css/style.css" rel="stylesheet">
+    <link href="css/dark-mode.css" rel="stylesheet">
+</head>
+
+<body>
+    <!-- Spinner Start -->
+    <div id="spinner"
+        class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+        <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
+    <!-- Spinner End -->
+
+
+    <!-- Navbar Start -->
+    {% include 'partials/navbar.html' %}
+    <!-- Navbar End -->
+
+
+    <!-- Header Start -->
+    <div class="container-fluid bg-primary py-5 mb-5 page-header">
+        <div class="container py-5">
+            <div class="row justify-content-center">
+                <div class="col-lg-10 text-center">
+                    <h1 class="display-3 text-white animated slideInDown">LearnNova Courses & Learning Paths</h1>
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb justify-content-center">
+                            <li class="breadcrumb-item"><a class="text-white" href="#">Home</a></li>
+                            <li class="breadcrumb-item"><a class="text-white" href="#">Pages</a></li>
+                            <li class="breadcrumb-item text-white active" aria-current="page">Courses</li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Header End -->
+
+    <!-- Course Search Start -->
+    <div class="search-box-wrapper">
+        <div class="search-box shadow-lg bg-white rounded-pill overflow-hidden">
+            <div class="input-group">
+
+                <!-- Search Icon -->
+                <span class="input-group-text bg-transparent border-0 px-3">
+                    <i class="fa fa-search text-primary"></i>
+                </span>
+
+                <!-- Input -->
+                <input type="text" id="courseSearch" class="form-control border-0 shadow-none py-3"
+                    placeholder="Search courses like Web Design, Coding..." onkeyup="filterCourses()">
+
+                <!-- Clear Filter Button -->
+                <button id="clearFilterBtn" class="btn btn-outline-secondary px-3 d-none" onclick="clearCategoryFilter()">
+                    <i class="fa fa-times"></i> Clear Filter
+                </button>
+
+                <!-- Search Button -->
+                <button class="btn btn-primary px-4 d-flex align-items-center justify-content-center">
+                    <i class="fa fa-arrow-right"></i>
+                </button>
+
+            </div>
+        </div>
+    </div>
+    <!-- Course Search End -->
+
+
+    <!-- Categories Start -->
+    <div class="category-grid-wrapper">
+        <div class="category-grid">
+
+            {% if categories %}
+            {% for category in categories %}
+            <div class="category-card {{ category.size_class }} {% if loop.index0 % 3 == 0 %}from-bottom{% elif loop.index0 % 3 == 1 %}from-left{% else %}from-right{% endif %}" onclick="filterByCategory('{{ category.name }}')" style="cursor: pointer;">
+                <img src="{{ category.image }}">
+                <div class="category-info">
+                    <h5>{{ category.name }}</h5>
+                    <small class="text-primary">{{ category.get_course_count() }} Courses</small>
+                </div>
+            </div>
+            {% endfor %}
+            {% else %}
+            <div class="category-card big from-bottom">
+                <img src="img/cat-1.jpg">
+                <div class="category-info">
+                    <h5>Programming & Development</h5>
+                    <small class="text-primary">49 Courses</small>
+                </div>
+            </div>
+
+            <div class="category-card tall from-left">
+                <img src="img/cat-2.jpg">
+                <div class="category-info">
+                    <h5>Government Exams</h5>
+                    <small class="text-primary">35 Courses</small>
+                </div>
+            </div>
+
+            <div class="category-card medium from-right">
+                <img src="img/cat-3.jpg">
+                <div class="category-info">
+                    <h5>Data Science & AI</h5>
+                    <small class="text-primary">28 Courses</small>
+                </div>
+            </div>
+
+            <div class="category-card small from-bottom">
+                <img src="img/cat-4.jpg">
+                <div class="category-info">
+                    <h5>Cloud Computing</h5>
+                    <small class="text-primary">22 Courses</small>
+                </div>
+            </div>
+
+            <div class="category-card medium from-left">
+                <img src="img/cat-5.jpg">
+                <div class="category-info">
+                    <h5>Cyber Security</h5>
+                    <small class="text-primary">18 Courses</small>
+                </div>
+            </div>
+
+            <div class="category-card wide from-right">
+                <img src="img/cat-6.jpg">
+                <div class="category-info">
+                    <h5>Machine Learning</h5>
+                    <small class="text-primary">25 Courses</small>
+                </div>
+            </div>
+
+            <div class="category-card web-design from-bottom">
+                <img src="img/cat-7.png">
+                <div class="category-info">
+                    <h5>Web Design</h5>
+                    <small class="text-primary">32 Courses</small>
+                </div>
+            </div>
+
+            <div class="category-card tall from-left">
+                <img src="img/cat-8.jpg">
+                <div class="category-info">
+                    <h5>App Development</h5>
+                    <small class="text-primary">20 Courses</small>
+                </div>
+            </div>
+
+            <div class="category-card medium from-right">
+                <img src="img/cat-9.jpg">
+                <div class="category-info">
+                    <h5>DevOps</h5>
+                    <small class="text-primary">15 Courses</small>
+                </div>
+            </div>
+
+            <div class="category-card small from-bottom">
+                <img src="img/cat-10.jpg">
+                <div class="category-info">
+                    <h5>UI / UX Design</h5>
+                    <small class="text-primary">27 Courses</small>
+                </div>
+            </div>
+
+            <div class="category-card wide from-left">
+                <img src="img/cat-11.jpg">
+                <div class="category-info">
+                    <h5>Blockchain</h5>
+                    <small class="text-primary">12 Courses</small>
+                </div>
+            </div>
+
+            <div class="category-card medium from-right">
+                <img src="img/cat-12.jpg">
+                <div class="category-info">
+                    <h5>Database Systems</h5>
+                    <small class="text-primary">19 Courses</small>
+                </div>
+            </div>
+
+            <div class="category-card small from-bottom">
+                <img src="img/cat-13.jpeg">
+                <div class="category-info">
+                    <h5>Networking</h5>
+                    <small class="text-primary">14 Courses</small>
+                </div>
+            </div>
+
+            <div class="category-card small from-right">
+                <img src="img/cat-1.jpg">
+                <div class="category-info">
+                    <h5>JavaScript Frameworks</h5>
+                    <small class="text-primary">24 Courses</small>
+                </div>
+            </div>
+
+            <div class="category-card small from-bottom">
+                <img src="img/cat-3.jpg">
+                <div class="category-info">
+                    <h5>AWS Cloud</h5>
+                    <small class="text-primary">15 Courses</small>
+                </div>
+            </div>
+
+            <div class="category-card small from-left">
+                <img src="img/cat-4.jpg">
+                <div class="category-info">
+                    <h5>Azure Cloud</h5>
+                    <small class="text-primary">12 Courses</small>
+                </div>
+            </div>
+            {% endif %}
+
+        </div>
+    </div>
+    <!-- Categories End -->
+
+
+    <!-- Courses Start -->
+    <div class="container-xxl py-5">
+        <div class="container" style="max-width: 1200px;">
+            <div class="text-center wow fadeInUp" data-wow-delay="0.1s">
+                <h6 class="section-title bg-white text-center text-primary px-3">Courses</h6>
+                <h1 class="mb-5">Popular Courses</h1>
+            </div>
+            <div class="row g-4">
+                {% if courses %}
+                {% for course in courses %}
+                <div class="col-lg-4 col-md-6 wow fadeInUp course-card" data-wow-delay="0.1s" data-category="{{ course.category }}">
+                    <div class="course-item bg-light">
+                        <div class="position-relative overflow-hidden">
+                            <img class="img-fluid" src="{{ course.thumbnail or 'img/course-1.jpg' }}" alt="{{ course.title }}">
+                            <div class="w-100 d-flex justify-content-center position-absolute bottom-0 start-0 mb-4">
+                                <a href="/course/{{ course.id }}" class="flex-shrink-0 btn btn-sm btn-primary px-3 border-end"
+                                    style="border-radius: 30px 0 0 30px;">Read More</a>
+                                {% if course.id in enrolled_course_ids %}
+                                <a href="/course/{{ course.id }}" class="flex-shrink-0 btn btn-sm btn-success px-3"
+                                    style="border-radius: 0 30px 30px 0;">Enrolled</a>
+                                {% else %}
+                                <a href="/enroll/{{ course.id }}" class="flex-shrink-0 btn btn-sm btn-primary px-3"
+                                    style="border-radius: 0 30px 30px 0;">Join Now</a>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="text-center p-4 pb-0">
+                            {% if course.is_free %}
+                            <h3 class="mb-0">FREE</h3>
+                            {% else %}
+                            <h3 class="mb-0">₹{{ course.price|int }}</h3>
+                            {% endif %}
+                            <div class="mb-3">
+                                {% for i in range(5) %}
+                                <small class="fa fa-star text-primary"></small>
+                                {% endfor %}
+                                <small>({{ course.total_reviews }})</small>
+                            </div>
+                            <h5 class="mb-4">{{ course.title }}</h5>
+                        </div>
+                        <div class="d-flex border-top">
+                            <small class="flex-fill text-center border-end py-2"><i
+                                    class="fa fa-user-tie text-primary me-2"></i>{{ course.instructor_name or 'Instructor' }}</small>
+                            <small class="flex-fill text-center border-end py-2"><i
+                                    class="fa fa-clock text-primary me-2"></i>{{ course.duration_weeks or 1 }} Weeks</small>
+                            <small class="flex-fill text-center py-2"><i class="fa fa-user text-primary me-2"></i>{{ course.total_students }}
+                                Students</small>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+                {% else %}
+                <!-- No courses available message -->
+                <div class="col-12 text-center py-5">
+                    <div class="py-5">
+                        <i class="fa fa-book-open fa-4x text-muted mb-4"></i>
+                        <h4 class="text-muted">No courses available yet</h4>
+                        <p class="text-muted">Check back soon for new courses!</p>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <!-- Courses End -->
+
+
+    <!-- Testimonial Start -->
+    <div class="container-xxl py-5 wow fadeInUp" data-wow-delay="0.1s">
+        <div class="container" style="max-width: 1200px;">
+            <div class="text-center">
+                <h6 class="section-title bg-white text-center text-primary px-3">Testimonial</h6>
+                <h1 class="mb-5">Our Students Say!</h1>
+            </div>
+            <div class="owl-carousel testimonial-carousel position-relative">
+                <div class="testimonial-item text-center">
+                    <img class="border rounded-circle p-2 mx-auto mb-3" src="img/testimonial-1.jpg"
+                        style="width: 80px; height: 80px;">
+                    <h5 class="mb-0">Rahul Mishra</h5>
+                    <p>UPSC Aspirant</p>
+                    <div class="testimonial-text bg-light text-center p-4">
+                        <p class="mb-0">LearnNova's AI-powered study planner helped me crack UPSC Prelims! The daily
+                            current affairs and mock tests were incredibly helpful.</p>
+                    </div>
+                </div>
+                <div class="testimonial-item text-center">
+                    <img class="border rounded-circle p-2 mx-auto mb-3" src="img/testimonial-2.jpg"
+                        style="width: 80px; height: 80px;">
+                    <h5 class="mb-0">Priya Singh</h5>
+                    <p>Software Developer</p>
+                    <div class="testimonial-text bg-light text-center p-4">
+                        <p class="mb-0">The Full Stack Development course is fantastic! I switched from a non-tech
+                            job
+                            to a developer role within 6 months.</p>
+                    </div>
+                </div>
+                <div class="testimonial-item text-center">
+                    <img class="border rounded-circle p-2 mx-auto mb-3" src="img/testimonial-3.jpg"
+                        style="width: 80px; height: 80px;">
+                    <h5 class="mb-0">Amit Kumar</h5>
+                    <p>Data Science Student</p>
+                    <div class="testimonial-text bg-light text-center p-4">
+                        <p class="mb-0">The AI study assistant cleared my doubts instantly. The personalized roadmap
+                            made learning Data Science so much easier!</p>
+                    </div>
+                </div>
+                <div class="testimonial-item text-center">
+                    <img class="border rounded-circle p-2 mx-auto mb-3" src="img/testimonial-4.jpg"
+                        style="width: 80px; height: 80px;">
+                    <h5 class="mb-0">Sneha Reddy</h5>
+                    <p>MCA Entrance Aspirant</p>
+                    <div class="testimonial-text bg-light text-center p-4">
+                        <p class="mb-0">Got into NIT Trichy thanks to LearnNova's structured preparation plan. The
+                            timed
+                            test series was a game changer!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Testimonial End -->
+
+
+    <!-- Footer Start -->
+    <div class="container-fluid bg-dark text-light footer pt-5 mt-5 wow fadeIn" data-wow-delay="0.1s">
+        <div class="container py-5">
+            <div class="row g-5">
+                <div class="col-lg-3 col-md-6">
+                    <h4 class="text-white mb-3">Quick Link</h4>
+                    <a class="btn btn-link" href="">About Us</a>
+                    <a class="btn btn-link" href="">Contact Us</a>
+                    <a class="btn btn-link" href="">Privacy Policy</a>
+                    <a class="btn btn-link" href="">Terms & Condition</a>
+                    <a class="btn btn-link" href="">FAQs & Help</a>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <h4 class="text-white mb-3">Contact</h4>
+                    <p class="mb-2"><i class="fa fa-map-marker-alt me-3"></i>123 Connaught Place, New Delhi, India
+                    </p>
+                    <p class="mb-2"><i class="fa fa-phone-alt me-3"></i>+91 98765 43210</p>
+                    <p class="mb-2"><i class="fa fa-envelope me-3"></i>info@example.com</p>
+                    <div class="d-flex pt-2">
+                        <a class="btn btn-outline-light btn-social" href=""><i class="fab fa-twitter"></i></a>
+                        <a class="btn btn-outline-light btn-social" href=""><i class="fab fa-facebook-f"></i></a>
+                        <a class="btn btn-outline-light btn-social" href=""><i class="fab fa-youtube"></i></a>
+                        <a class="btn btn-outline-light btn-social" href=""><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <h4 class="text-white mb-3">Gallery</h4>
+                    <div class="row g-2 pt-2">
+                        <div class="col-4">
+                            <img class="img-fluid bg-light p-1" src="img/course-1.jpg" alt="">
+                        </div>
+                        <div class="col-4">
+                            <img class="img-fluid bg-light p-1" src="img/course-2.jpg" alt="">
+                        </div>
+                        <div class="col-4">
+                            <img class="img-fluid bg-light p-1" src="img/course-3.jpg" alt="">
+                        </div>
+                        <div class="col-4">
+                            <img class="img-fluid bg-light p-1" src="img/course-2.jpg" alt="">
+                        </div>
+                        <div class="col-4">
+                            <img class="img-fluid bg-light p-1" src="img/course-3.jpg" alt="">
+                        </div>
+                        <div class="col-4">
+                            <img class="img-fluid bg-light p-1" src="img/course-1.jpg" alt="">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <h4 class="text-white mb-3">Newsletter</h4>
+                    <p>Subscribe to our newsletter for the latest updates and learning resources.</p>
+                    <div class="position-relative mx-auto" style="max-width: 400px;">
+                        <input class="form-control border-0 w-100 py-3 ps-4 pe-5" type="text" placeholder="Your email">
+                        <button type="button"
+                            class="btn btn-primary py-2 position-absolute top-0 end-0 mt-2 me-2">SignUp</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container">
+            <div class="copyright">
+                <div class="row">
+                    <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
+                        &copy; <a class="border-bottom" href="#">Your Site Name</a>, All Right Reserved.
+
+                        <!--/*** This template is free as long as you keep the footer author’s credit link/attribution link/backlink. If you'd like to use the template without the footer author’s credit link/attribution link/backlink, you can purchase the Credit Removal License from "https://htmlcodex.com/credit-removal". Thank you for your support. ***/-->
+                        Designed By <a class="border-bottom" href="#">Gaurav</a><br><br>
+                        Distributed By <a class="border-bottom" href="#">Gaurav</a>
+                    </div>
+                    <div class="col-md-6 text-center text-md-end">
+                        <div class="footer-menu">
+                            <a href="">Home</a>
+                            <a href="">Cookies</a>
+                            <a href="">Help</a>
+                            <a href="">FQAs</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Footer End -->
+
+
+    <!-- Back to Top -->
+    <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
+
+
+    <!-- JavaScript Libraries -->
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="lib/wow/wow.min.js"></script>
+    <script src="lib/easing/easing.min.js"></script>
+    <script src="lib/waypoints/waypoints.min.js"></script>
+    <script src="lib/owlcarousel/owl.carousel.min.js"></script>
+
+    <!-- Template Javascript -->
+    <script src="js/main.js"></script>
+    <script>
+        let selectedCategory = null;
+
+        function filterByCategory(category) {
+            selectedCategory = category;
+            document.getElementById("courseSearch").value = "";
+            document.getElementById("clearFilterBtn").classList.remove("d-none");
+            
+            // Highlight selected category
+            document.querySelectorAll('.category-card').forEach(card => {
+                card.classList.remove('selected');
+                if (card.querySelector('h5').innerText === category) {
+                    card.classList.add('selected');
+                }
+            });
+            
+            filterCourses();
+            
+            // Scroll to courses section
+            document.querySelector('.container-xxl.py-5').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function clearCategoryFilter() {
+            selectedCategory = null;
+            document.getElementById("courseSearch").value = "";
+            document.getElementById("clearFilterBtn").classList.add("d-none");
+            
+            // Remove selected class from all category cards
+            document.querySelectorAll('.category-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            
+            filterCourses();
+        }
+
+        function filterCourses() {
+            let input = document.getElementById("courseSearch").value.toLowerCase();
+            let courses = document.querySelectorAll(".course-card");
+
+            courses.forEach(course => {
+                let title = course.querySelector("h5").innerText.toLowerCase();
+                let instructor = course.querySelector("small").innerText.toLowerCase();
+                let category = course.getAttribute("data-category") ? course.getAttribute("data-category").toLowerCase() : "";
+                let text = title + " " + instructor + " " + category;
+
+                let matchesSearch = text.includes(input);
+                let matchesCategory = !selectedCategory || category === selectedCategory.toLowerCase();
+
+                if (matchesSearch && matchesCategory) {
+                    course.style.display = "block";
+                } else {
+                    course.style.display = "none";
+                }
+            });
+            
+            // Show clear filter button if category is selected or search has text
+            if (selectedCategory || input) {
+                document.getElementById("clearFilterBtn").classList.remove("d-none");
+            } else {
+                document.getElementById("clearFilterBtn").classList.add("d-none");
+            }
+        }
+
+        const cards = document.querySelectorAll(".category-card");
+
+        const observer = new IntersectionObserver(entries => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add("show");
+                }
+            });
+        }, {
+            threshold: 0.2
+        });
+
+        cards.forEach(card => {
+            observer.observe(card);
+        });
+
+    </script>
+    <script src="js/dark-mode.js"></script>
+    
+    <!-- AI Chatbot Widget -->
+    {% include 'partials/chatbot.html' %}
+</body>
+
+</html>

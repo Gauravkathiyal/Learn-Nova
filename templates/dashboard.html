@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-1K34ZCR5M7"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-1K34ZCR5M7');
+    </script>
+    <meta charset="utf-8">
+    <title>eLEARNING - Dashboard</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="" name="keywords">
+    <meta content="" name="description">
+
+    <!-- Favicon -->
+    <link href="img/favicon.ico" rel="icon">
+
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600&family=Nunito:wght@600;700;800&display=swap"
+        rel="stylesheet">
+
+    <!-- Icon Font Stylesheet -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- Libraries Stylesheet -->
+    <link href="/lib/animate/animate.min.css" rel="stylesheet">
+    <link href="/lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
+
+    <!-- Customized Bootstrap Stylesheet -->
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Template Stylesheet -->
+    <link href="/css/style.css" rel="stylesheet">
+    <link href="/css/dark-mode.css" rel="stylesheet">
+</head>
+
+<body>
+    <!-- Spinner Start -->
+    <div id="spinner"
+        class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+        <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
+    <!-- Spinner End -->
+
+
+    <!-- Navbar Start -->
+    <nav class="navbar navbar-expand-lg bg-white navbar-light shadow sticky-top p-0">
+        <a href="/" class="navbar-brand d-flex align-items-center px-4 px-lg-5">
+            <h2 class="m-0 text-primary"><i class="fa fa-book me-3"></i>Learn Nova</h2>
+        </a>
+        <button type="button" class="navbar-toggler me-4" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarCollapse">
+            <div class="navbar-nav ms-auto p-4 p-lg-0">
+                <a href="/" class="nav-item nav-link">Home</a>
+
+                <!-- Courses Link -->
+                <a href="/courses" class="nav-item nav-link">Courses</a>
+
+                <!-- Learn Dropdown -->
+                <div class="nav-item dropdown">
+                    <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Learn</a>
+                    <div class="dropdown-menu fade-down m-0">
+                        <a href="/ai/recommend" class="dropdown-item">AI Course Recommendation</a>
+                        <a href="/ai/roadmap-page" class="dropdown-item">AI Study Roadmap</a>
+                        <a href="/timetable" class="dropdown-item">AI Study Planner</a>
+                        <a href="/tests" class="dropdown-item">Mock Test Series</a>
+                    </div>
+                </div>
+
+                <a href="/dashboard" class="nav-item nav-link">Dashboard</a>
+                {% if current_user.is_authenticated and (current_user.is_admin or current_user.role in ['teacher', 'admin', 'instructor']) %}
+                <a href="/teacher/dashboard" class="nav-item nav-link">Teacher Dashboard</a>
+                {% elif current_user.is_authenticated %}
+                <a href="/become-teacher" class="nav-item nav-link">Become a Teacher</a>
+                {% endif %}
+                <a href="/team" class="nav-item nav-link">Our Team</a>
+                <a href="/about" class="nav-item nav-link">About</a>
+                <a href="/testimonial" class="nav-item nav-link">Testimonial</a>
+                <a href="/contact" class="nav-item nav-link">Contact</a>
+
+                <button type="button" id="darkModeToggle"
+                    class="nav-item nav-link dark-mode-toggle bg-transparent border-0"><i
+                        class="fas fa-moon"></i></button>
+            </div>
+            {% if current_user.is_authenticated %}
+            <div class="d-flex align-items-center">
+                <span class="text-dark me-3 d-none d-lg-block">Welcome, {{ current_user.name }}</span>
+                <a href="/logout" class="btn btn-outline-danger py-4 px-lg-5 d-none d-lg-block">Logout<i
+                        class="fa fa-sign-out-alt ms-3"></i></a>
+            </div>
+            {% else %}
+            <a href="/login" class="btn btn-primary py-4 px-lg-5 d-none d-lg-block">Join Now<i
+                    class="fa fa-arrow-right ms-3"></i></a>
+            {% endif %}
+        </div>
+    </nav>
+    <!-- Navbar End -->
+
+
+    <!-- Header Start -->
+    <div class="container-fluid bg-primary py-5 mb-5 page-header">
+        <div class="container py-5">
+            <div class="row justify-content-center">
+                <div class="col-lg-10 text-center">
+                    <h1 class="display-3 text-white animated slideInDown">Student Dashboard</h1>
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb justify-content-center">
+                            <li class="breadcrumb-item"><a class="text-white" href="#">Home</a></li>
+                            <li class="breadcrumb-item text-white active" aria-current="page">Dashboard</li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Header End -->
+
+
+    <!-- Dashboard Details Start -->
+    <div class="container-xxl py-5">
+        <div class="container">
+            <div class="row g-4 mb-5">
+                <!-- Welcome Banner -->
+                <div class="col-12 wow fadeInUp" data-wow-delay="0.1s">
+                    <div class="bg-light rounded p-4 d-flex align-items-center justify-content-between">
+                        <div>
+                            <h2 class="mb-2">Welcome back, <span class="text-primary">{{ current_user.name }}!</span> 👋</h2>
+                            <p class="mb-0">You've completed <strong>{{ total_progress }}%</strong> of your enrolled courses this week.
+                                Keep it up!</p>
+                        </div>
+                        <div class="rounded-circle bg-primary d-flex align-items-center justify-content-center"
+                            style="width: 100px; height: 100px;">
+                            <i class="fa fa-user text-white" style="font-size: 40px;"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dashboard Stats -->
+            <div class="row g-4 mb-5">
+                <div class="col-lg-3 col-sm-6 wow fadeInUp" data-wow-delay="0.1s">
+                    <div class="bg-light text-center p-4 rounded h-100">
+                        <i class="fa fa-3x fa-book-open text-primary mb-3"></i>
+                        <h4 class="mb-1">{{ total_courses }}</h4>
+                        <p class="mb-0">Enrolled Courses</p>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-sm-6 wow fadeInUp" data-wow-delay="0.3s">
+                    <div class="bg-light text-center p-4 rounded h-100">
+                        <i class="fa fa-3x fa-certificate text-primary mb-3"></i>
+                        <h4 class="mb-1">{{ certificates_earned }}</h4>
+                        <p class="mb-0">Certificates Earned</p>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-sm-6 wow fadeInUp" data-wow-delay="0.5s">
+                    <div class="bg-light text-center p-4 rounded h-100">
+                        <i class="fa fa-3x fa-clock text-primary mb-3"></i>
+                        <h4 class="mb-1">{{ total_study_time }} Hrs</h4>
+                        <p class="mb-0">Learning Time</p>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-sm-6 wow fadeInUp" data-wow-delay="0.7s">
+                    <div class="bg-light text-center p-4 rounded h-100">
+                        <i class="fa fa-3x fa-star text-primary mb-3"></i>
+                        <h4 class="mb-1">{{ avg_score }}</h4>
+                        <p class="mb-0">Avg Mock Test Score</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Content Area: Enrolled Courses & Quick Actions -->
+            <div class="row g-4">
+                <!-- Main Content Left (Enrolled Courses) -->
+                <div class="col-lg-8 wow fadeInUp" data-wow-delay="0.1s">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h3 class="mb-0">Continue Learning</h3>
+                        <a href="/courses" class="btn btn-primary">
+                            <i class="fa fa-plus me-2"></i>Add Course
+                        </a>
+                    </div>
+
+                    {% if enrollments %}
+                    {% for item in enrollments %}
+                    <!-- Course Item -->
+                    <div class="d-flex bg-light align-items-center mb-4 rounded overflow-hidden">
+                        <img class="img-fluid" src="{{ item.course.thumbnail or 'img/course-1.jpg' }}"
+                            style="width: 150px; height: 150px; object-fit: cover;" alt="">
+                        <div class="p-4 w-100">
+                            <h5 class="mb-2">{{ item.course.title }}</h5>
+                            <div class="progress mb-2" style="height: 10px;">
+                                <div class="progress-bar bg-primary" role="progressbar" style="width: {{ item.enrollment.progress_percent }}%;"
+                                    aria-valuenow="{{ item.enrollment.progress_percent }}" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <small>{{ item.enrollment.progress_percent }}% Completed</small>
+                                <a href="/course/{{ item.course.id }}" class="btn btn-sm btn-primary px-3">Continue</a>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                    {% else %}
+                    <!-- No courses enrolled yet -->
+                    <div class="text-center py-5">
+                        <div class="mb-4">
+                            <i class="fa fa-book-open text-muted" style="font-size: 4rem;"></i>
+                        </div>
+                        <h4 class="mb-3">No courses enrolled yet</h4>
+                        <p class="text-muted mb-4">Start your learning journey by enrolling in a course!</p>
+                        <a href="/courses" class="btn btn-primary btn-lg">
+                            <i class="fa fa-plus me-2"></i>Browse Courses
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <!-- Sidebar Right (Actions) -->
+                <div class="col-lg-4 wow fadeInUp" data-wow-delay="0.3s">
+                    <h3 class="mb-4">AI Features</h3>
+                    
+                    <!-- AI Study Planner -->
+                    <div class="bg-light p-4 rounded mb-4 border-start border-4 border-primary">
+                        <h5 class="mb-3"><i class="fa fa-robot text-primary me-2"></i>AI Study Planner</h5>
+                        <p class="mb-3 text-muted">Generate a personalized study schedule based on your exams and free time.</p>
+                        <a href="/timetable" class="btn btn-primary w-100"><i class="fa fa-calendar-alt me-2"></i>Generate Plan</a>
+                    </div>
+
+                    <!-- AI Chatbot -->
+                    <div class="bg-light p-4 rounded mb-4 border-start border-4 border-success">
+                        <h5 class="mb-3"><i class="fa fa-comments text-success me-2"></i>AI Chatbot</h5>
+                        <p class="mb-3 text-muted">Chat with our AI assistant for instant help with courses, features, and study tips.</p>
+                        <button class="btn btn-success w-100" onclick="toggleChatbot()"><i class="fa fa-comments me-2"></i>Open Chat</button>
+                    </div>
+
+                    <!-- AI Course Recommendations -->
+                    <div class="bg-light p-4 rounded mb-4 border-start border-4 border-info">
+                        <h5 class="mb-3"><i class="fa fa-lightbulb text-info me-2"></i>AI Recommendations</h5>
+                        <p class="mb-3 text-muted">Get personalized course recommendations based on your profile.</p>
+                        <button class="btn btn-info w-100" onclick="getAIRecommendations()"><i class="fa fa-graduation-cap me-2"></i>Get Recommendations</button>
+                    </div>
+
+                    <!-- AI Study Roadmap -->
+                    <div class="bg-light p-4 rounded mb-4 border-start border-4 border-warning">
+                        <h5 class="mb-3"><i class="fa fa-route text-warning me-2"></i>AI Study Roadmap</h5>
+                        <p class="mb-3 text-muted">Generate a detailed study roadmap for your target exam.</p>
+                        <button class="btn btn-warning w-100" onclick="generateRoadmap()"><i class="fa fa-map me-2"></i>Generate Roadmap</button>
+                    </div>
+
+                    <!-- Mock Test Series -->
+                    <div class="bg-light p-4 rounded mb-4">
+                        <h5 class="mb-3">Mock Test Series</h5>
+                        <p class="mb-3 text-muted">Take a practice test and evaluate your current preparation level.</p>
+                        <a href="/tests" class="btn btn-outline-primary w-100"><i class="fa fa-file-alt me-2"></i>Take a Test</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Dashboard Details End -->
+
+    <!-- Footer Start -->
+    <div class="container-fluid bg-dark text-light footer pt-5 mt-5 wow fadeIn" data-wow-delay="0.1s">
+        <!-- Footer Content Structure -->
+        <div class="container py-5">
+            <div class="row g-5">
+                <div class="col-lg-3 col-md-6">
+                    <h4 class="text-white mb-3">Quick Link</h4>
+                    <a class="btn btn-link" href="/about">About Us</a>
+                    <a class="btn btn-link" href="/contact">Contact Us</a>
+                    <a class="btn btn-link" href="">Privacy Policy</a>
+                    <a class="btn btn-link" href="">Terms & Condition</a>
+                    <a class="btn btn-link" href="">FAQs & Help</a>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <h4 class="text-white mb-3">Contact</h4>
+                    <p class="mb-2"><i class="fa fa-map-marker-alt me-3"></i>123 Connaught Place, New Delhi, India</p>
+                    <p class="mb-2"><i class="fa fa-phone-alt me-3"></i>+91 98765 43210</p>
+                    <p class="mb-2"><i class="fa fa-envelope me-3"></i>info@learnnova.com</p>
+                    <div class="d-flex pt-2">
+                        <a class="btn btn-outline-light btn-social" href=""><i class="fab fa-twitter"></i></a>
+                        <a class="btn btn-outline-light btn-social" href=""><i class="fab fa-facebook-f"></i></a>
+                        <a class="btn btn-outline-light btn-social" href=""><i class="fab fa-youtube"></i></a>
+                        <a class="btn btn-outline-light btn-social" href=""><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+                <!-- Other footer columns omitted for typical boilerplate length -->
+            </div>
+        </div>
+        <div class="container">
+            <div class="copyright">
+                <div class="row">
+                    <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
+                        &copy; <a class="border-bottom" href="#">LearnNova</a>, All Right Reserved.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Footer End -->
+
+
+    <!-- Back to Top -->
+    <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
+
+
+    <!-- JavaScript Libraries -->
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/lib/wow/wow.min.js"></script>
+    <script src="/lib/easing/easing.min.js"></script>
+    <script src="/lib/waypoints/waypoints.min.js"></script>
+    <script src="/lib/owlcarousel/owl.carousel.min.js"></script>
+
+    <!-- Template Javascript -->
+    <script src="/js/main.js"></script>
+    <script src="/js/dark-mode.js"></script>
+    
+    <!-- AI Feature Scripts -->
+    <script>
+        // Get AI Recommendations - Opens the questionnaire page
+        function getAIRecommendations() {
+            // Navigate to the AI recommendation questionnaire page
+            window.location.href = '/ai/recommend';
+        }
+
+        // Generate AI Roadmap
+        function generateRoadmap() {
+            // Navigate to the AI roadmap questionnaire page
+            window.location.href = '/ai/roadmap-page';
+        }
+    </script>
+    
+    <!-- AI Chatbot Widget -->
+    {% include 'partials/chatbot.html' %}
+</body>
+
+</html>

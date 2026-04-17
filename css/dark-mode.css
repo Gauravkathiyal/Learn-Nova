@@ -1,0 +1,222 @@
+/* dark-mode.css */
+
+/* Dark Mode Variables mapped directly to Bootstrap root variables */
+:root {
+  --light-primary: #06BBCC;
+  --dark-bg: #121212;
+  --dark-surface: #1e1e1e;
+  --dark-surface-elevated: #2d2d2d;
+  --dark-text: #e0e0e0;
+  --dark-text-muted: #a0a0a0;
+  --dark-border: #333333;
+}
+
+body.dark-mode {
+  background-color: var(--dark-bg) !important;
+  color: var(--dark-text) !important;
+}
+
+/* Typography Overrides */
+body.dark-mode h1,
+body.dark-mode h2,
+body.dark-mode h3,
+body.dark-mode h4,
+body.dark-mode h5,
+body.dark-mode h6,
+body.dark-mode .h1,
+body.dark-mode .h2,
+body.dark-mode .h3,
+body.dark-mode .h4,
+body.dark-mode .h5,
+body.dark-mode .h6 {
+  color: #ffffff !important;
+}
+
+body.dark-mode p,
+body.dark-mode span,
+body.dark-mode div {
+  color: var(--dark-text);
+}
+
+body.dark-mode .text-primary {
+  color: var(--light-primary) !important;
+}
+
+body.dark-mode .text-muted {
+  color: var(--dark-text-muted) !important;
+}
+
+/* Background Utility Overrides */
+body.dark-mode .bg-white,
+body.dark-mode .bg-light {
+    background-color: var(--dark-surface) !important;
+}
+
+body.dark-mode .bg-primary {
+    background-color: var(--light-primary) !important;
+}
+
+/* Navbar */
+body.dark-mode .navbar.bg-white {
+    background-color: var(--dark-surface) !important;
+    border-bottom: 1px solid var(--dark-border);
+}
+
+body.dark-mode .navbar-light .navbar-nav .nav-link {
+    color: var(--dark-text) !important;
+}
+
+body.dark-mode .navbar-light .navbar-nav .nav-link:hover,
+body.dark-mode .navbar-light .navbar-nav .nav-link.active {
+    color: var(--light-primary) !important;
+}
+
+body.dark-mode .dropdown-menu {
+    background-color: var(--dark-surface-elevated);
+    border-color: var(--dark-border);
+}
+
+body.dark-mode .dropdown-item {
+    color: var(--dark-text);
+}
+
+body.dark-mode .dropdown-item:hover {
+    background-color: var(--dark-surface);
+    color: var(--light-primary);
+}
+
+/* Sections & Cards */
+body.dark-mode .course-item,
+body.dark-mode .team-item,
+body.dark-mode .testimonial-item .testimonial-text,
+body.dark-mode .ln-service-card {
+    background-color: var(--dark-surface-elevated) !important;
+    border-color: var(--dark-border) !important;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.3) !important;
+    color: var(--dark-text);
+}
+
+/* Adjust Service Card */
+body.dark-mode .ln-service-card,
+body.dark-mode .about-card {
+    background: var(--dark-surface-elevated);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    border: 1px solid var(--dark-border);
+}
+
+body.dark-mode .ln-service-card:hover,
+body.dark-mode .about-card:hover {
+    background: var(--dark-surface);
+    box-shadow: 0 15px 40px rgba(6, 187, 204, 0.2);
+}
+
+body.dark-mode #learnnova-services-wrapper,
+body.dark-mode #learnnova-about-wrapper {
+    background: var(--dark-bg) !important;
+}
+
+/* Forms */
+body.dark-mode .form-control,
+body.dark-mode .form-select {
+    background-color: var(--dark-surface-elevated);
+    border-color: var(--dark-border);
+    color: var(--dark-text);
+}
+
+body.dark-mode .form-control:focus,
+body.dark-mode .form-select:focus {
+    background-color: var(--dark-surface-elevated);
+    color: var(--dark-text);
+    border-color: var(--light-primary);
+}
+
+body.dark-mode .form-floating > label {
+    color: var(--dark-text-muted);
+}
+
+body.dark-mode .form-floating > .form-control:focus ~ label,
+body.dark-mode .form-floating > .form-control:not(:placeholder-shown) ~ label,
+body.dark-mode .form-floating > .form-select ~ label {
+    color: var(--dark-text-muted);
+    background-color: transparent;
+}
+
+/* Footer overrides */
+body.dark-mode .footer {
+    background-color: #0b0b0b !important;
+    border-top: 1px solid var(--dark-border);
+}
+
+body.dark-mode .footer .btn.btn-link,
+body.dark-mode .footer p {
+    color: var(--dark-text-muted);
+}
+
+body.dark-mode .footer .btn.btn-link:hover {
+    color: #fff;
+    letter-spacing: 1px;
+    box-shadow: none;
+}
+
+/* Borders */
+body.dark-mode .border-end,
+body.dark-mode .border-top,
+body.dark-mode .border-bottom,
+body.dark-mode .border-start,
+body.dark-mode .border {
+    border-color: var(--dark-border) !important;
+}
+
+/* Test/MCQ adjustments */
+body.dark-mode .custom-radio {
+    background-color: var(--dark-surface-elevated) !important;
+    border-color: var(--dark-border) !important;
+}
+body.dark-mode .options .form-check:hover {
+    background-color: var(--dark-surface) !important;
+}
+body.dark-mode .question-palette .btn.q-unvisited {
+    background-color: var(--dark-surface-elevated);
+    border-color: var(--dark-border);
+    color: var(--dark-text);
+}
+
+/* Enhancing UI generally */
+body.dark-mode .category .bg-white {
+    background-color: rgba(30,30,30,0.9) !important;
+}
+
+.ln-service-card {
+    padding: 30px;
+    border-radius: 10px;
+    transition: 0.3s;
+    height: 100%;
+}
+
+.ln-service-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+.ln-service-card i {
+    font-size: 40px;
+    color: var(--light-primary, #06BBCC);
+    margin-bottom: 20px;
+}
+
+.dark-mode-toggle {
+    background: transparent;
+    border: none;
+    color: var(--dark-text, #333);
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: color 0.3s;
+}
+
+.dark-mode-toggle:focus {
+    outline: none;
+}
+
+body.dark-mode .dark-mode-toggle {
+    color: #f39c12; /* Sun color */
+}

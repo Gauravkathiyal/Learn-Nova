@@ -1,0 +1,43 @@
+<nav class="navbar navbar-expand-lg bg-white navbar-light shadow sticky-top p-0">
+    <a href="/" class="navbar-brand d-flex align-items-center px-4 px-lg-5">
+        <h2 class="m-0 text-primary"><i class="fa fa-book me-3"></i>Learn Nova</h2>
+    </a>
+    <button type="button" class="navbar-toggler me-4" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarCollapse">
+        <div class="navbar-nav ms-auto p-4 p-lg-0">
+            <a href="/" class="nav-item nav-link">Home</a>
+
+            <!-- Courses Link -->
+            <a href="/courses" class="nav-item nav-link">Courses</a>
+
+            <!-- Learn Dropdown -->
+            <div class="nav-item dropdown">
+                <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Learn</a>
+                <div class="dropdown-menu fade-down m-0">
+                    <a href="/ai/recommend" class="dropdown-item">AI Course Recommendation</a>
+                    <a href="/ai/ml-recommendations" class="dropdown-item">ML-Powered Recommendations</a>
+                    <a href="/ai/roadmap-page" class="dropdown-item">AI Study Roadmap</a>
+                    <a href="/timetable" class="dropdown-item">AI Study Planner</a>
+                    <a href="/tests" class="dropdown-item">Mock Test Series</a>
+                </div>
+            </div>
+
+            {% if current_user.is_authenticated and (current_user.is_admin or current_user.role in ['teacher', 'admin', 'instructor']) %}
+            <a href="/teacher/dashboard" class="nav-item nav-link">Teacher Dashboard</a>
+            {% else %}
+            <a href="/dashboard" class="nav-item nav-link">Dashboard</a>
+            {% endif %}
+            <a href="/team" class="nav-item nav-link">Our Team</a>
+            <a href="/about" class="nav-item nav-link">About</a>
+            <a href="/testimonial" class="nav-item nav-link">Testimonial</a>
+            <a href="/contact" class="nav-item nav-link">Contact</a>
+
+            <button type="button" id="darkModeToggle"
+                class="nav-item nav-link dark-mode-toggle bg-transparent border-0"><i class="fas fa-moon"></i></button>
+        </div>
+        <a href="/login" class="btn btn-primary py-4 px-lg-5 d-none d-lg-block">Join Now<i
+                class="fa fa-arrow-right ms-3"></i></a>
+    </div>
+</nav>
